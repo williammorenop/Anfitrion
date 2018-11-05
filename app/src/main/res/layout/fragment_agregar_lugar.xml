@@ -49,9 +49,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@+id/imagegal"
-        android:layout_below="@+id/buttonUbicion"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="15dp"
         android:layout_marginEnd="61dp"
         android:text="Galeria" />
 
@@ -105,10 +103,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@+id/imagegal"
-        android:layout_below="@+id/buttonUbicion"
         android:layout_alignParentStart="true"
         android:layout_marginStart="65dp"
-        android:layout_marginTop="13dp"
         android:layout_marginEnd="82dp"
         android:layout_marginBottom="2dp"
         android:layout_toStartOf="@+id/buttonGal"

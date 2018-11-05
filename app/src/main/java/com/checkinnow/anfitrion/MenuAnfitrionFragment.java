@@ -1,12 +1,13 @@
 
 package com.checkinnow.anfitrion;
 
+import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
+
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +20,7 @@ public class MenuAnfitrionFragment extends Fragment
     private String mParam2;
     private Button botonagregaractividad;
 
-    private OnFragmentInteractionListener mListener;
+
 
     public MenuAnfitrionFragment()
     {
@@ -44,73 +45,15 @@ public class MenuAnfitrionFragment extends Fragment
             @Override
             public void onClick(View v)
             {
-                Bundle bundle = new Bundle();
-                bundle.putInt("test",10);
 
                 AgregarLugarFragment agregarlugar= new AgregarLugarFragment();
-                agregarlugar.setArguments(bundle);
-
-                // transaction
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
-
-                // Replace whatever is in the fragment_container view with this fragment,
-                // and add the transaction to the back stack
                 transaction.replace(R.id.contenedor, agregarlugar);
                 transaction.addToBackStack(null);
-
-                // Commit the transaction
                 transaction.commit();
-
-
             }
         });
         return v;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri)
-    {
-        if (mListener != null)
-        {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
-    @Override
-    public void onAttach(Context context)
-    {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener)
-        {
-            mListener = (OnFragmentInteractionListener) context;
-        }
-        else
-        {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-    }
-
-    @Override
-    public void onDetach()
-    {
-        super.onDetach();
-        mListener = null;
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener
-    {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
-    }
 }

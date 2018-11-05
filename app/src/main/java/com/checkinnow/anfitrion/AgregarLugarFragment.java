@@ -2,6 +2,8 @@ package com.checkinnow.anfitrion;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -12,7 +14,6 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.util.Log;
@@ -26,7 +27,6 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.common.base.MoreObjects;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
@@ -39,25 +39,21 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 
 import Modelo.ContantesClass;
 import Modelo.LugarClass;
 
-import static Modelo.ContantesClass.PATHANFITRION;
+import static Modelo.ContantesClass.PATHANFITRIONSTORAGE;
 import static Modelo.ContantesClass.PATHLUGARESANFITRION;
 import static Modelo.ContantesClass.REQUEST_IMAGE_CAPTURE;
 import static Modelo.ContantesClass.TAG;
 import static android.app.Activity.RESULT_OK;
 
-//import static Modelo.ContantesClass.READ_EXTERNAL_STORAGE;
-//import static android.app.Activity.RESULT_OK;
-
 
 public class AgregarLugarFragment extends Fragment {
 
 
-    private OnFragmentInteractionListener mListener;
+   // private OnFragmentInteractionListener mListener;
     private Button ubicacion;
     private Button gale;
     private EditText nombre;
@@ -76,19 +72,8 @@ public class AgregarLugarFragment extends Fragment {
     BitmapFactory.Options options;
 
 
-
-
-
     public AgregarLugarFragment() {
         // Required empty public constructor
-    }
-
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-
     }
 
     @Override
@@ -101,7 +86,7 @@ public class AgregarLugarFragment extends Fragment {
         mStorageRef = FirebaseStorage.getInstance().getReference();
 
         lugar = new LugarClass();
-        myRef=database.getReference(PATHANFITRION);
+        myRef=database.getReference(PATHANFITRIONSTORAGE);
         String key = myRef.push().getKey();
         lugar.setID(key);
 
@@ -130,6 +115,13 @@ public class AgregarLugarFragment extends Fragment {
             }
         });
 
+        ubicacion.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                lanzarMapa();
+            }
+        });
+
         gale.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -147,6 +139,18 @@ public class AgregarLugarFragment extends Fragment {
 
         return v;
     }
+    ////////////////////////////////////////LANZAR MAPA/////////////////////////////////////////////////////////////////
+
+    private void lanzarMapa() {
+
+        MapaSeleccionFragment mapagregarlugar= new MapaSeleccionFragment();
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        transaction.replace(R.id.contenedor, mapagregarlugar);
+        transaction.addToBackStack(null);
+        transaction.commit();
+
+    }
+    ////////////////////////////////////////LANZAR MAPA-/////////////////////////////////////////////////////////////////
 
     ////////////////////////////////////////GALERIA/////////////////////////////////////////////////////////////////
     private void agregarImagen() {
@@ -177,7 +181,10 @@ public class AgregarLugarFragment extends Fragment {
                 if(resultCode == RESULT_OK){
                     try {
                         Uri imageUri = data.getData();
-                        agregarStorage(imageUri);
+                        //agregarStorage(imageUri);
+
+                        lugar.getLugares().add(imageUri);
+
                         final InputStream imageStream = getActivity().getApplicationContext().getContentResolver().openInputStream(imageUri);
                         final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
                         image1.setImageBitmap(selectedImage);
@@ -205,7 +212,11 @@ public class AgregarLugarFragment extends Fragment {
 
 
                     File imgFile = new  File(mCurrentPhotoPath);
-                    agregarStorage(Uri.fromFile(imgFile));
+                    //agregarStorage(Uri.fromFile(imgFile));
+
+                    lugar.getLugares().add(Uri.fromFile(imgFile));
+
+
                     if(imgFile.exists()) {
                             Log.i(TAG,"-->"+imgFile.getPath());
                             options = new BitmapFactory.Options();
@@ -301,9 +312,10 @@ public class AgregarLugarFragment extends Fragment {
     private void agregarStorage(Uri uri)
     {
         Log.i (TAG,"checkinnow:  -"+uri);
+        Log.i (TAG,"checkinnow:  -22"+uri.getLastPathSegment());
 
 
-        StorageReference riversRef = mStorageRef.child(PATHLUGARESANFITRION).child(lugar.getID()).child(uri.getLastPathSegment());
+        StorageReference riversRef = mStorageRef.child(PATHANFITRIONSTORAGE).child(lugar.getID()).child(uri.getLastPathSegment());
 
         riversRef.putFile(uri)
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -329,35 +341,17 @@ public class AgregarLugarFragment extends Fragment {
         lugar.setNombre(nombre.getText().toString());
         lugar.setTipo(tipo.getText().toString());
         lugar.setValor(Double.valueOf(valor.getText().toString()));
-        lugar.setPath(PATHANFITRION + lugar.getID());
+        lugar.setPath(PATHANFITRIONSTORAGE + lugar.getID());
         lugar.setLatitude(4.31);
         lugar.setLongitud(-71.31);
         Log.i(TAG,lugar.toString());
-
+        for (Uri uri : lugar.getLugares()) {
+            agregarStorage(uri);
+        }
         myRef=database.getReference(PATHLUGARESANFITRION+lugar.getID());
         myRef.setValue(lugar);
 
     }
 
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
-    }
 }
