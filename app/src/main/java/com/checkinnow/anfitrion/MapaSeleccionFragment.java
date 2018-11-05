@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
@@ -21,6 +23,7 @@ public class MapaSeleccionFragment extends Fragment implements OnMapReadyCallbac
     MapView mMapView;
     View v;
     private SupportMapFragment mapFragment;
+    private TextView latlong;
 
     public MapaSeleccionFragment() {
         // Required empty public constructor
@@ -31,7 +34,9 @@ public class MapaSeleccionFragment extends Fragment implements OnMapReadyCallbac
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        v= inflater.inflate(R.layout.fragment_mapa_seleccion, container, false);
+            v= inflater.inflate(R.layout.fragment_mapa_seleccion, container, false);
+
+            latlong = v.findViewById(R.id.latlong);
 
             MapsInitializer.initialize(this.getActivity());
             mMapView = (MapView) v.findViewById(R.id.map);
@@ -78,26 +83,23 @@ public class MapaSeleccionFragment extends Fragment implements OnMapReadyCallbac
     public void onMapReady(GoogleMap googleMap) {
 
             mMap = googleMap;
-
-            // Add a marker in Sydney and move the camera
-            //LatLng bogota2 = new LatLng(4.397908 , -74.076066);
-       /*mMap.addMarker(new MarkerOptions().position(bogota2).title("Marcador en Plaza de Bolívar").snippet("test").alpha(1f));
-            mMap.moveCamera(CameraUpdateFactory.zoomTo(10));
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(bogota2));*/
-
             mMap.getUiSettings().setZoomControlsEnabled(true);
-
             mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
                 @Override
                 public void onMapLongClick(LatLng latLng) {
 
-                    if(lastmarker != null)
-                    {
-                        lastmarker.remove();
-                    }
-                    lastmarker=mMap.addMarker(new MarkerOptions().position(latLng).title("Aqui"));
+                    seleccion(latLng);
                 }
             });
 
+    }
+
+    private void seleccion(LatLng latLng) {
+        if(lastmarker != null)
+        {
+            lastmarker.remove();
+        }
+        lastmarker=mMap.addMarker(new MarkerOptions().position(latLng).title("Aqui"));
+        latlong.setText("Lat: "+latLng.latitude+" Long: "+latLng.longitude);
     }
 }
