@@ -49,7 +49,7 @@ public class MenuAnfitrionFragment extends Fragment
                 AgregarLugarFragment agregarlugar= new AgregarLugarFragment();
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
                 transaction.replace(R.id.contenedor, agregarlugar);
-                transaction.addToBackStack(null);
+                transaction.addToBackStack("agregarFraglugar");
                 transaction.commit();
             }
         });
