@@ -142,7 +142,7 @@ public class AgregarLugarFragment extends Fragment {
 
         MapaSeleccionFragment mapagregarlugar = new MapaSeleccionFragment();
 
-        mapagregarlugar.setTargetFragment(AgregarLugarFragment.this, REQUEST_LOCATION);
+        mapagregarlugar.setTargetFragment(AgregarLugarFragment.this, ContantesClass.REQUEST_LOCATION);
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         transaction.replace(R.id.contenedor, mapagregarlugar);
         transaction.addToBackStack("agregarFragMapa");
@@ -189,6 +189,17 @@ public class AgregarLugarFragment extends Fragment {
                     }
                 }
             }
+            case ContantesClass.REQUEST_LOCATION: {
+                if (resultCode == Activity.RESULT_OK) {
+                    Bundle result = data.getBundleExtra("bundle");
+                    getFragmentManager().popBackStack();
+                    Log.i(TAG, lugar.toString());
+                    lugar.setLatitude(result.getDouble("lat"));
+                    lugar.setLongitud(result.getDouble("long"));
+                    Log.i(TAG, lugar.toString());
+                    texto.setText("LAT: " + result.getDouble("lat") + "LONG: " + result.getDouble("long"));
+                }
+            }
             case ContantesClass.READ_EXTERNAL_STORAGE: {   //PERMISO
                 if (resultCode == RESULT_OK) {
                     Toast.makeText(v.getContext(),
@@ -201,38 +212,29 @@ public class AgregarLugarFragment extends Fragment {
                 }
                 return;
             }
-            case REQUEST_IMAGE_CAPTURE: {
+            case REQUEST_IMAGE_CAPTURE:
+            {
                 if (resultCode == RESULT_OK) {
-                    Log.i("TESTING","4444444444444444");
-                    File imgFile = new File(mCurrentPhotoPath);
+
+
+                    File imgFile = new  File(mCurrentPhotoPath);
                     //agregarStorage(Uri.fromFile(imgFile));
-                    Log.i("TESTING","555555555555");
+
                     lugar.getLugares().add(Uri.fromFile(imgFile));
 
-                    Log.i("TESTING","66666666666666");
-                    if (imgFile.exists()) {
-                        Log.i(TAG, "-->" + imgFile.getPath());
+
+                    if(imgFile.exists()) {
+                        Log.i(TAG,"-->"+imgFile.getPath());
                         options = new BitmapFactory.Options();
                         options.inSampleSize = 2;
-                        Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getPath(), options);
+                        Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getPath(),options);
                         image2.setImageBitmap(myBitmap);
                     }
-                    Log.i("TESTING","777777777777");
+
+
                 }
 
             }
-            case REQUEST_LOCATION: {
-                if (resultCode == Activity.RESULT_OK) {
-                    Bundle result = data.getBundleExtra("bundle");
-                    getFragmentManager().popBackStack();
-                    Log.i(TAG, lugar.toString());
-                    lugar.setLatitude(result.getDouble("lat"));
-                    lugar.setLongitud(result.getDouble("long"));
-                    Log.i(TAG, lugar.toString());
-                    texto.setText("LAT: " + result.getDouble("lat") + "LONG: " + result.getDouble("long"));
-                }
-            }
-
         }
     }
 
