@@ -265,37 +265,41 @@ public class AgregarLugarFragment extends Fragment {
     }
 
     private void takePicture() {
-        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED){
 
-            Log.i("TESTING","22222222222222");
+
             Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             // Ensure that there's a camera activity to handle the intent
             if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
                 // Create the File where the photo should go
                 File photoFile = null;
                 try {
-                    Log.i("TESTING","33333333333333");
                     photoFile = createImageFile();
                 } catch (IOException ex) {
-                    Toast.makeText(getContext(),"ERROR al tomar fotografia.",Toast.LENGTH_SHORT).show();
                     // Error occurred while creating the File
                 }
+                Log.i(TAG, mCurrentPhotoPath);
+                // Continue only if the File was successfully created
                 if (photoFile != null) {
-                    Log.i("TESTING","444444444444444444");
+                    Log.i(TAG, mCurrentPhotoPath);
                     Uri photoURI = FileProvider.getUriForFile(v.getContext(),
                             "com.checkinnow.anfitrion",
                             photoFile);
+                    Log.i(TAG, mCurrentPhotoPath);
                     takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                    Log.i("TESTING","4444411111");
+                    Log.i(TAG, mCurrentPhotoPath);
+                    //galleryAddPic();
                     startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
                 }
             }
-        } else {
+        }
+        else
+        {
             Toast.makeText(v.getContext(),
-                    "Sin acceso a camara",
+                    "Sin acceso a camara" ,
                     Toast.LENGTH_LONG).show();
             requestPermission(getActivity(), Manifest.permission.CAMERA,
-                    "Se necesita acceder a la camara", REQUEST_IMAGE_CAPTURE);
+                    "Se necesita acceder a la camara" , REQUEST_IMAGE_CAPTURE);
         }
     }
 
