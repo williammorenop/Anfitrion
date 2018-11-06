@@ -3,12 +3,10 @@ package com.checkinnow.anfitrion;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Fragment;
-import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -73,25 +71,23 @@ public class MapaSeleccionFragment extends Fragment implements OnMapReadyCallbac
             Intent intento = new Intent();
             Bundle bundle = new Bundle();
 
-            bundle.putDouble("lat",lastmarker.getPosition().latitude);
-            bundle.putDouble("long",lastmarker.getPosition().longitude);
+            bundle.putDouble("lat", lastmarker.getPosition().latitude);
+            bundle.putDouble("long", lastmarker.getPosition().longitude);
 
-            intento.putExtra("bundle",bundle);
+            intento.putExtra("bundle", bundle);
 
             getTargetFragment().onActivityResult(
                     getTargetRequestCode(),
                     Activity.RESULT_OK,
                     intento
             );
-
-            //getFragmentManager().popBackStack();
+            getFragmentManager().popBackStack();
 
         } else {
             Toast.makeText(getContext(), "No a seleccionado ningún punto aun.", Toast.LENGTH_SHORT).show();
         }
 
     }
-
 
 
     @Override

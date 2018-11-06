@@ -39,7 +39,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import Modelo.ContantesClass;
 import Modelo.LugarClass;
@@ -47,13 +49,13 @@ import Modelo.LugarClass;
 import static Modelo.ContantesClass.PATHANFITRIONSTORAGE;
 import static Modelo.ContantesClass.PATHLUGARESANFITRION;
 import static Modelo.ContantesClass.REQUEST_IMAGE_CAPTURE;
-import static Modelo.ContantesClass.REQUEST_LOCATION;
 import static Modelo.ContantesClass.TAG;
 import static android.app.Activity.RESULT_OK;
 
 
 public class AgregarLugarFragment extends Fragment {
 
+    private static LugarClass lugar;
     String mCurrentPhotoPath;
     BitmapFactory.Options options;
     private Button ubicacion;
@@ -69,12 +71,22 @@ public class AgregarLugarFragment extends Fragment {
     private FirebaseDatabase database;
     private StorageReference mStorageRef;
     private View v;
-    private LugarClass lugar;
     private TextView texto;
-
+    private Bundle result;
+    private double lati;
+    private double longi;
+    private List<Uri> uris;
+    private String key;
 
     public AgregarLugarFragment() {
         // Required empty public constructor
+        uris = new ArrayList<Uri>();
+        lugar = new LugarClass();
+        database = FirebaseDatabase.getInstance();
+        mStorageRef = FirebaseStorage.getInstance().getReference();
+        myRef = database.getReference(PATHANFITRIONSTORAGE);
+        this.key = myRef.push().getKey();
+
     }
 
     @Override
@@ -82,12 +94,7 @@ public class AgregarLugarFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         v = inflater.inflate(R.layout.fragment_agregar_lugar, container, false);
-        database = FirebaseDatabase.getInstance();
-        mStorageRef = FirebaseStorage.getInstance().getReference();
-        lugar = new LugarClass();
-        myRef = database.getReference(PATHANFITRIONSTORAGE);
-        String key = myRef.push().getKey();
-        lugar.setID(key);
+
         tipo = v.findViewById(R.id.editTextTipo);
         nombre = v.findViewById(R.id.editTextnombre);
         valor = v.findViewById(R.id.editTextValor);
@@ -98,9 +105,9 @@ public class AgregarLugarFragment extends Fragment {
         image1 = v.findViewById(R.id.imagegal);
         image2 = v.findViewById(R.id.imagecam);
         texto = v.findViewById(R.id.textView);
-        Log.i("TESTING","11111111");
+        Log.i("TESTING", "11111111");
         requestPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE,
-                "Se necesita acceder al almacenamiento", ContantesClass.READ_EXTERNAL_STORAGE);
+                "Se necesita acceder al almacenamiento", ContantesClass.READ_EXTERNAL_STORAGE2);
 
         requestPermission(getActivity(), Manifest.permission.CAMERA,
                 "Se necesita acceder a la camara", REQUEST_IMAGE_CAPTURE);
@@ -142,7 +149,7 @@ public class AgregarLugarFragment extends Fragment {
 
         MapaSeleccionFragment mapagregarlugar = new MapaSeleccionFragment();
 
-        mapagregarlugar.setTargetFragment(AgregarLugarFragment.this, ContantesClass.REQUEST_LOCATION);
+        mapagregarlugar.setTargetFragment(AgregarLugarFragment.this, ContantesClass.REQUEST_LOCATION2);
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         transaction.replace(R.id.contenedor, mapagregarlugar);
         transaction.addToBackStack("agregarFragMapa");
@@ -158,13 +165,13 @@ public class AgregarLugarFragment extends Fragment {
 
             Intent pickImage = new Intent(Intent.ACTION_PICK);
             pickImage.setType("image/*");
-            startActivityForResult(pickImage, ContantesClass.IMAGE_PICKER_REQUEST);
+            startActivityForResult(pickImage, ContantesClass.IMAGE_PICKER_REQUEST2);
         } else {
             Toast.makeText(v.getContext(),
                     "Sin acceso a almacenamietno",
                     Toast.LENGTH_LONG).show();
             requestPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE,
-                    "Se necesita acceder al almacenamiento", ContantesClass.READ_EXTERNAL_STORAGE);
+                    "Se necesita acceder al almacenamiento", ContantesClass.READ_EXTERNAL_STORAGE2);
         }
 
 
@@ -174,12 +181,14 @@ public class AgregarLugarFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
-            case ContantesClass.IMAGE_PICKER_REQUEST: {
+            case ContantesClass.IMAGE_PICKER_REQUEST2: {
                 if (resultCode == RESULT_OK) {
                     try {
                         Uri imageUri = data.getData();
                         //agregarStorage(imageUri);
-                        lugar.getLugares().add(imageUri);
+
+                        //lugar.agregarlugar(imageUri);
+                        uris.add(imageUri);
 
                         final InputStream imageStream = getActivity().getApplicationContext().getContentResolver().openInputStream(imageUri);
                         final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
@@ -188,19 +197,22 @@ public class AgregarLugarFragment extends Fragment {
                         e.printStackTrace();
                     }
                 }
+                return;
             }
-            case ContantesClass.REQUEST_LOCATION: {
+            case ContantesClass.REQUEST_LOCATION2: {
                 if (resultCode == Activity.RESULT_OK) {
-                    Bundle result = data.getBundleExtra("bundle");
-                    getFragmentManager().popBackStack();
-                    Log.i(TAG, lugar.toString());
-                    lugar.setLatitude(result.getDouble("lat"));
-                    lugar.setLongitud(result.getDouble("long"));
-                    Log.i(TAG, lugar.toString());
-                    texto.setText("LAT: " + result.getDouble("lat") + "LONG: " + result.getDouble("long"));
+                    /* this.result =*/
+
+                    Bundle result2 = data.getBundleExtra("bundle");
+                    lati = result2.getDouble("lat");
+                    longi = result2.getDouble("long");
+                    result2.clear();
+                    // getFragmentManager().popBackStack();
+                    //tengoUbicacion(result);
                 }
+                return;
             }
-            case ContantesClass.READ_EXTERNAL_STORAGE: {   //PERMISO
+            case ContantesClass.READ_EXTERNAL_STORAGE2: {   //PERMISO
                 if (resultCode == RESULT_OK) {
                     Toast.makeText(v.getContext(),
                             "Comencemos",
@@ -212,31 +224,31 @@ public class AgregarLugarFragment extends Fragment {
                 }
                 return;
             }
-            case REQUEST_IMAGE_CAPTURE:
-            {
+            case REQUEST_IMAGE_CAPTURE: {
                 if (resultCode == RESULT_OK) {
 
 
-                    File imgFile = new  File(mCurrentPhotoPath);
+                    File imgFile = new File(mCurrentPhotoPath);
                     //agregarStorage(Uri.fromFile(imgFile));
 
-                    lugar.getLugares().add(Uri.fromFile(imgFile));
+                    //lugar.agregarlugar(Uri.fromFile(imgFile));
+                    uris.add(Uri.fromFile(imgFile));
 
-
-                    if(imgFile.exists()) {
-                        Log.i(TAG,"-->"+imgFile.getPath());
+                    if (imgFile.exists()) {
+                        Log.i(TAG, "-->" + imgFile.getPath());
                         options = new BitmapFactory.Options();
                         options.inSampleSize = 2;
-                        Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getPath(),options);
+                        Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getPath(), options);
                         image2.setImageBitmap(myBitmap);
                     }
 
 
                 }
-
+                return;
             }
         }
     }
+
 
     /////////////////////////////////////////PERMISOS////////////////////////////////////////////////////////////////
     private void requestPermission(Activity context, String permission, String explanation, int requestId) {
@@ -267,7 +279,7 @@ public class AgregarLugarFragment extends Fragment {
     }
 
     private void takePicture() {
-        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED){
+        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
 
 
             Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -294,14 +306,12 @@ public class AgregarLugarFragment extends Fragment {
                     startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
                 }
             }
-        }
-        else
-        {
+        } else {
             Toast.makeText(v.getContext(),
-                    "Sin acceso a camara" ,
+                    "Sin acceso a camara",
                     Toast.LENGTH_LONG).show();
             requestPermission(getActivity(), Manifest.permission.CAMERA,
-                    "Se necesita acceder a la camara" , REQUEST_IMAGE_CAPTURE);
+                    "Se necesita acceder a la camara", REQUEST_IMAGE_CAPTURE);
         }
     }
 
@@ -320,7 +330,7 @@ public class AgregarLugarFragment extends Fragment {
         Log.i(TAG, "checkinnow:  -22" + uri.getLastPathSegment());
 
 
-        StorageReference mRef = mStorageRef.child(PATHANFITRIONSTORAGE).child(lugar.getID()).child(uri.getLastPathSegment());
+        StorageReference mRef = mStorageRef.child(PATHANFITRIONSTORAGE).child(key).child(uri.getLastPathSegment());
 
         mRef.putFile(uri)
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -342,18 +352,30 @@ public class AgregarLugarFragment extends Fragment {
 
     private void agregarLugar() {
 
-        //LugarClass lugar = new LugarClass();
-        lugar.setNombre(nombre.getText().toString());
-        lugar.setTipo(tipo.getText().toString());
-        lugar.setValor(Double.valueOf(valor.getText().toString()));
-        lugar.setPath(PATHANFITRIONSTORAGE + lugar.getID());
-        Log.i(TAG, lugar.toString());
-        for (Uri uri : lugar.getLugares()) {
-            agregarStorage(uri);
+        if (lati != 0 && longi !=0) {
+            if (this.uris.size() >= 4) {
+                //LugarClass lugar = new LugarClass();
+                lugar.setNombre(nombre.getText().toString());
+                lugar.setTipo(tipo.getText().toString());
+                lugar.setValor(Double.valueOf(valor.getText().toString()));
+                lugar.setPath(PATHANFITRIONSTORAGE + key);
+                Log.i(TAG, lugar.toString());
+                lugar.setLatitude(this.lati);
+                lugar.setLongitud(this.longi);
+                lugar.setID(this.key);
+                Log.i(TAG, "FINAL" + lugar.toString());
+                myRef = database.getReference(PATHLUGARESANFITRION + key);
+                myRef.setValue(lugar);
+                for (Uri uri : this.uris) {
+                    agregarStorage(uri);
+                }
+                getFragmentManager().popBackStack();
+            } else {
+                Toast.makeText(getContext(), "NO ingreso 4 imagenes", Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            Toast.makeText(getContext(), "NO a seleccionado una ubicacion", Toast.LENGTH_SHORT).show();
         }
-        Log.i(TAG, "FINAL" + lugar.toString());
-        myRef = database.getReference(PATHLUGARESANFITRION + lugar.getID());
-        myRef.setValue(lugar);
 
     }
 

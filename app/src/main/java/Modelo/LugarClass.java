@@ -1,7 +1,6 @@
 package Modelo;
 
 import android.net.Uri;
-import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +14,11 @@ public class LugarClass {
     private String tipo;
     private String ID;
     private String path;
-    private List<Uri> lugares;
+    //private List<Uri> lugares;
+
+    public LugarClass() {
+        //lugares = new ArrayList<Uri>();
+    }
 
     public String getPath() {
         return path;
@@ -25,13 +28,13 @@ public class LugarClass {
         this.path = path;
     }
 
-    public List<Uri> getLugares() {
-        return lugares;
-    }
+    //public List<Uri> getLugares() {
+    //    return lugares;
+    //}
 
-    public void setLugares(List<Uri> lugares) {
-        this.lugares = lugares;
-    }
+   // public void setLugares(List<Uri> lugares) {
+   //     this.lugares = lugares;
+   // }
 
     @Override
     public String toString() {
@@ -43,9 +46,14 @@ public class LugarClass {
                 ", tipo='" + tipo + '\'' +
                 ", ID='" + ID + '\'' +
                 ", path='" + path + '\'' +
-                ", lugares=" + lugares +
+                //", lugares=" + lugares +
                 '}';
     }
+
+   /* public int agregarlugar(Uri uri) {
+        this.lugares.add(uri);
+        return 1;
+    }*/
 
     public String getID() {
         return ID;
@@ -53,10 +61,6 @@ public class LugarClass {
 
     public void setID(String ID) {
         this.ID = ID;
-    }
-
-    public LugarClass() {
-        lugares = new ArrayList<Uri>();
     }
 
     public double getLatitude() {

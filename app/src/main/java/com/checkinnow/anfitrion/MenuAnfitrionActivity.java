@@ -3,29 +3,27 @@ package com.checkinnow.anfitrion;
 
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.net.Uri;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 
-public class MenuAnfitrionActivity extends AppCompatActivity{
+public class MenuAnfitrionActivity extends AppCompatActivity {
 
 
-   // MenuAnfitrionFragment menufragmetn;
-    
+    // MenuAnfitrionFragment menufragmetn;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu_anfitrion);
 
 
-        MenuAnfitrionFragment menufragmetn=new MenuAnfitrionFragment();
+        MenuAnfitrionFragment menufragmetn = new MenuAnfitrionFragment();
         View view = findViewById(R.id.contenedor);
 
-        if(view == null){
-        }
-        else{
+        if (view == null) {
+        } else {
             MenuAnfitrionFragment crear1 = new MenuAnfitrionFragment();
             FragmentManager fm = getFragmentManager();
             FragmentTransaction fragmentTransaction = fm.beginTransaction();
