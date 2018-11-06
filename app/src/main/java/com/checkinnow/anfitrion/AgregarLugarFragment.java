@@ -23,6 +23,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -46,14 +47,15 @@ import Modelo.LugarClass;
 import static Modelo.ContantesClass.PATHANFITRIONSTORAGE;
 import static Modelo.ContantesClass.PATHLUGARESANFITRION;
 import static Modelo.ContantesClass.REQUEST_IMAGE_CAPTURE;
+import static Modelo.ContantesClass.REQUEST_LOCATION;
 import static Modelo.ContantesClass.TAG;
 import static android.app.Activity.RESULT_OK;
 
 
 public class AgregarLugarFragment extends Fragment {
 
-
-   // private OnFragmentInteractionListener mListener;
+    String mCurrentPhotoPath;
+    BitmapFactory.Options options;
     private Button ubicacion;
     private Button gale;
     private EditText nombre;
@@ -66,10 +68,9 @@ public class AgregarLugarFragment extends Fragment {
     private DatabaseReference myRef;
     private FirebaseDatabase database;
     private StorageReference mStorageRef;
-    private  View v;
+    private View v;
     private LugarClass lugar;
-    String mCurrentPhotoPath;
-    BitmapFactory.Options options;
+    private TextView texto;
 
 
     public AgregarLugarFragment() {
@@ -79,18 +80,14 @@ public class AgregarLugarFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+
         v = inflater.inflate(R.layout.fragment_agregar_lugar, container, false);
-
-        database= FirebaseDatabase.getInstance();
+        database = FirebaseDatabase.getInstance();
         mStorageRef = FirebaseStorage.getInstance().getReference();
-
         lugar = new LugarClass();
-        myRef=database.getReference(PATHANFITRIONSTORAGE);
+        myRef = database.getReference(PATHANFITRIONSTORAGE);
         String key = myRef.push().getKey();
         lugar.setID(key);
-
-
         tipo = v.findViewById(R.id.editTextTipo);
         nombre = v.findViewById(R.id.editTextnombre);
         valor = v.findViewById(R.id.editTextValor);
@@ -100,13 +97,13 @@ public class AgregarLugarFragment extends Fragment {
         agregar = v.findViewById(R.id.buttonAgregar);
         image1 = v.findViewById(R.id.imagegal);
         image2 = v.findViewById(R.id.imagecam);
-
-
+        texto = v.findViewById(R.id.textView);
+        Log.i("TESTING","11111111");
         requestPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE,
-                "Se necesita acceder al almacenamiento" , ContantesClass.READ_EXTERNAL_STORAGE);
+                "Se necesita acceder al almacenamiento", ContantesClass.READ_EXTERNAL_STORAGE);
 
         requestPermission(getActivity(), Manifest.permission.CAMERA,
-                "Se necesita acceder a la camara" , REQUEST_IMAGE_CAPTURE);
+                "Se necesita acceder a la camara", REQUEST_IMAGE_CAPTURE);
 
         agregar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -143,10 +140,12 @@ public class AgregarLugarFragment extends Fragment {
 
     private void lanzarMapa() {
 
-        MapaSeleccionFragment mapagregarlugar= new MapaSeleccionFragment();
+        MapaSeleccionFragment mapagregarlugar = new MapaSeleccionFragment();
+
+        mapagregarlugar.setTargetFragment(AgregarLugarFragment.this, REQUEST_LOCATION);
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         transaction.replace(R.id.contenedor, mapagregarlugar);
-        transaction.addToBackStack(null);
+        transaction.addToBackStack("agregarFragMapa");
         transaction.commit();
 
     }
@@ -155,34 +154,31 @@ public class AgregarLugarFragment extends Fragment {
     ////////////////////////////////////////GALERIA/////////////////////////////////////////////////////////////////
     private void agregarImagen() {
 
-        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED){
+        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
 
             Intent pickImage = new Intent(Intent.ACTION_PICK);
             pickImage.setType("image/*");
             startActivityForResult(pickImage, ContantesClass.IMAGE_PICKER_REQUEST);
-        }
-        else
-        {
+        } else {
             Toast.makeText(v.getContext(),
-                    "Sin acceso a almacenamietno" ,
+                    "Sin acceso a almacenamietno",
                     Toast.LENGTH_LONG).show();
             requestPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE,
-                    "Se necesita acceder al almacenamiento" , ContantesClass.READ_EXTERNAL_STORAGE);
+                    "Se necesita acceder al almacenamiento", ContantesClass.READ_EXTERNAL_STORAGE);
         }
 
 
     }
+
     /////////////////////////////////////////GALERIA-////////////////////////////////////////////////////////////////
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        switch(requestCode) {
-            case ContantesClass.IMAGE_PICKER_REQUEST:
-            {
-                if(resultCode == RESULT_OK){
+        switch (requestCode) {
+            case ContantesClass.IMAGE_PICKER_REQUEST: {
+                if (resultCode == RESULT_OK) {
                     try {
                         Uri imageUri = data.getData();
                         //agregarStorage(imageUri);
-
                         lugar.getLugares().add(imageUri);
 
                         final InputStream imageStream = getActivity().getApplicationContext().getContentResolver().openInputStream(imageUri);
@@ -195,7 +191,6 @@ public class AgregarLugarFragment extends Fragment {
             }
             case ContantesClass.READ_EXTERNAL_STORAGE: {   //PERMISO
                 if (resultCode == RESULT_OK) {
-                    //Se encendió la localización!!!
                     Toast.makeText(v.getContext(),
                             "Comencemos",
                             Toast.LENGTH_LONG).show();
@@ -206,28 +201,36 @@ public class AgregarLugarFragment extends Fragment {
                 }
                 return;
             }
-            case REQUEST_IMAGE_CAPTURE:
-            {
+            case REQUEST_IMAGE_CAPTURE: {
                 if (resultCode == RESULT_OK) {
-
-
-                    File imgFile = new  File(mCurrentPhotoPath);
+                    Log.i("TESTING","4444444444444444");
+                    File imgFile = new File(mCurrentPhotoPath);
                     //agregarStorage(Uri.fromFile(imgFile));
-
+                    Log.i("TESTING","555555555555");
                     lugar.getLugares().add(Uri.fromFile(imgFile));
 
-
-                    if(imgFile.exists()) {
-                            Log.i(TAG,"-->"+imgFile.getPath());
-                            options = new BitmapFactory.Options();
-                            options.inSampleSize = 2;
-                            Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getPath(),options);
-                            image2.setImageBitmap(myBitmap);
+                    Log.i("TESTING","66666666666666");
+                    if (imgFile.exists()) {
+                        Log.i(TAG, "-->" + imgFile.getPath());
+                        options = new BitmapFactory.Options();
+                        options.inSampleSize = 2;
+                        Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getPath(), options);
+                        image2.setImageBitmap(myBitmap);
                     }
-
-
+                    Log.i("TESTING","777777777777");
                 }
 
+            }
+            case REQUEST_LOCATION: {
+                if (resultCode == Activity.RESULT_OK) {
+                    Bundle result = data.getBundleExtra("bundle");
+                    getFragmentManager().popBackStack();
+                    Log.i(TAG, lugar.toString());
+                    lugar.setLatitude(result.getDouble("lat"));
+                    lugar.setLongitud(result.getDouble("long"));
+                    Log.i(TAG, lugar.toString());
+                    texto.setText("LAT: " + result.getDouble("lat") + "LONG: " + result.getDouble("long"));
+                }
             }
 
         }
@@ -242,6 +245,7 @@ public class AgregarLugarFragment extends Fragment {
             ActivityCompat.requestPermissions(context, new String[]{permission}, requestId);
         }
     }
+
     /////////////////////////////////////////PERMISOS-////////////////////////////////////////////////////////////////
     /////////////////////////////////////////CAMARA////////////////////////////////////////////////////////////////
     private File createImageFile() throws IOException {
@@ -261,41 +265,37 @@ public class AgregarLugarFragment extends Fragment {
     }
 
     private void takePicture() {
-        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED){
+        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
 
-
-                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                // Ensure that there's a camera activity to handle the intent
-                if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
-                    // Create the File where the photo should go
-                    File photoFile = null;
-                    try {
-                        photoFile = createImageFile();
-                    } catch (IOException ex) {
-                        // Error occurred while creating the File
-                    }
-                    Log.i(TAG, mCurrentPhotoPath);
-                    // Continue only if the File was successfully created
-                    if (photoFile != null) {
-                        Log.i(TAG, mCurrentPhotoPath);
-                        Uri photoURI = FileProvider.getUriForFile(v.getContext(),
-                                "com.checkinnow.anfitrion",
-                                photoFile);
-                        Log.i(TAG, mCurrentPhotoPath);
-                        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                        Log.i(TAG, mCurrentPhotoPath);
-                        //galleryAddPic();
-                        startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-                    }
+            Log.i("TESTING","22222222222222");
+            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            // Ensure that there's a camera activity to handle the intent
+            if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+                // Create the File where the photo should go
+                File photoFile = null;
+                try {
+                    Log.i("TESTING","33333333333333");
+                    photoFile = createImageFile();
+                } catch (IOException ex) {
+                    Toast.makeText(getContext(),"ERROR al tomar fotografia.",Toast.LENGTH_SHORT).show();
+                    // Error occurred while creating the File
                 }
-        }
-        else
-        {
+                if (photoFile != null) {
+                    Log.i("TESTING","444444444444444444");
+                    Uri photoURI = FileProvider.getUriForFile(v.getContext(),
+                            "com.checkinnow.anfitrion",
+                            photoFile);
+                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                    Log.i("TESTING","4444411111");
+                    startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+                }
+            }
+        } else {
             Toast.makeText(v.getContext(),
-                    "Sin acceso a camara" ,
+                    "Sin acceso a camara",
                     Toast.LENGTH_LONG).show();
             requestPermission(getActivity(), Manifest.permission.CAMERA,
-                    "Se necesita acceder a la camara" , REQUEST_IMAGE_CAPTURE);
+                    "Se necesita acceder a la camara", REQUEST_IMAGE_CAPTURE);
         }
     }
 
@@ -309,26 +309,25 @@ public class AgregarLugarFragment extends Fragment {
     /////////////////////////////////////////CAMARA--////////////////////////////////////////////////////////////////
     /////////////////////////////////////////STORAGE////////////////////////////////////////////////////////////////
 
-    private void agregarStorage(Uri uri)
-    {
-        Log.i (TAG,"checkinnow:  -"+uri);
-        Log.i (TAG,"checkinnow:  -22"+uri.getLastPathSegment());
+    private void agregarStorage(Uri uri) {
+        Log.i(TAG, "checkinnow:  -" + uri);
+        Log.i(TAG, "checkinnow:  -22" + uri.getLastPathSegment());
 
 
-        StorageReference riversRef = mStorageRef.child(PATHANFITRIONSTORAGE).child(lugar.getID()).child(uri.getLastPathSegment());
+        StorageReference mRef = mStorageRef.child(PATHANFITRIONSTORAGE).child(lugar.getID()).child(uri.getLastPathSegment());
 
-        riversRef.putFile(uri)
+        mRef.putFile(uri)
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        Toast.makeText(v.getContext(),"SUCCESS UPLOAD",Toast.LENGTH_SHORT).show();
-                        Log.i(TAG,taskSnapshot.getUploadSessionUri().toString());
+                        Toast.makeText(v.getContext(), "SUCCESS UPLOAD", Toast.LENGTH_SHORT).show();
+                        Log.i(TAG, taskSnapshot.getUploadSessionUri().toString());
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception exception) {
-                        Toast.makeText(v.getContext(),"ERROR UPLOAD",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(v.getContext(), "ERROR UPLOAD", Toast.LENGTH_SHORT).show();
                     }
                 });
     }
@@ -342,13 +341,12 @@ public class AgregarLugarFragment extends Fragment {
         lugar.setTipo(tipo.getText().toString());
         lugar.setValor(Double.valueOf(valor.getText().toString()));
         lugar.setPath(PATHANFITRIONSTORAGE + lugar.getID());
-        lugar.setLatitude(4.31);
-        lugar.setLongitud(-71.31);
-        Log.i(TAG,lugar.toString());
+        Log.i(TAG, lugar.toString());
         for (Uri uri : lugar.getLugares()) {
             agregarStorage(uri);
         }
-        myRef=database.getReference(PATHLUGARESANFITRION+lugar.getID());
+        Log.i(TAG, "FINAL" + lugar.toString());
+        myRef = database.getReference(PATHLUGARESANFITRION + lugar.getID());
         myRef.setValue(lugar);
 
     }

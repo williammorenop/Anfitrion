@@ -110,4 +110,14 @@
         android:layout_toStartOf="@+id/buttonGal"
         android:text="Camara" />
 
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/editTextnombre"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="78dp"
+        android:layout_marginBottom="-60dp"
+        android:text="TextView" />
+
 </RelativeLayout>
