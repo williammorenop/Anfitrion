@@ -10,10 +10,8 @@ import android.widget.Button;
 
 public class MenuAnfitrionFragment extends Fragment {
 
-    private String mParam1;
-    private String mParam2;
     private Button botonagregaractividad;
-
+    private Button botonverlugares;
 
     public MenuAnfitrionFragment() {
         // Required empty public constructor
@@ -29,19 +27,40 @@ public class MenuAnfitrionFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         View v = inflater.inflate(R.layout.fragment_menu_anfitrion, container, false);
-        botonagregaractividad = (Button) v.findViewById(R.id.button);
+        botonagregaractividad = (Button) v.findViewById(R.id.Agregarbutton);
+        botonverlugares = (Button) v.findViewById(R.id.verbutton);
         botonagregaractividad.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                AgregarLugarFragment agregarlugar = new AgregarLugarFragment();
-                FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                transaction.replace(R.id.contenedor, agregarlugar);
-                transaction.addToBackStack("agregarFraglugar");
-                transaction.commit();
+               agregarLugar();
             }
         });
+
+        botonverlugares.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                verLugares();
+            }
+        });
+
         return v;
     }
+
+    private void verLugares() {
+        VerlugaresFragment verlugares = new VerlugaresFragment();
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        transaction.replace(R.id.contenedor, verlugares);
+        transaction.addToBackStack("agregarFragverlugar");
+        transaction.commit();
+    }
+
+    private void agregarLugar() {
+        AgregarLugarFragment agregarlugar = new AgregarLugarFragment();
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        transaction.replace(R.id.contenedor, agregarlugar);
+        transaction.addToBackStack("agregarFragagregarlugar");
+        transaction.commit();
+    }
+
 
 }
