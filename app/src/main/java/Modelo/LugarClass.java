@@ -1,5 +1,8 @@
 package Modelo;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class LugarClass {
 
     private double latitude;
@@ -9,9 +12,18 @@ public class LugarClass {
     private String tipo;
     private String ID;
     private String path;
+    private List<String> nombreimagenes;
 
     public LugarClass() {
+        nombreimagenes = new ArrayList<String>();
+    }
 
+    public List<String> getNombreimagenes() {
+        return nombreimagenes;
+    }
+
+    public void setNombreimagenes(List<String> nombreimagenes) {
+        this.nombreimagenes = nombreimagenes;
     }
 
     public String getPath() {

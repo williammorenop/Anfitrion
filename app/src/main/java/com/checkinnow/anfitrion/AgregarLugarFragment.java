@@ -360,7 +360,15 @@ public class AgregarLugarFragment extends Fragment {
                 lugar.setLatitude(this.lati);
                 lugar.setLongitud(this.longi);
                 lugar.setID(this.key);
+
+                for (Uri uri : this.uris) {
+                    lugar.getNombreimagenes().add(uri.getLastPathSegment());
+                }
+
                 Log.i(TAG, "FINAL" + lugar.toString());
+
+
+
                 myRef = database.getReference(PATHLUGARESANFITRION + key);
                 myRef.setValue(lugar);
                 for (Uri uri : this.uris) {
