@@ -57,6 +57,9 @@ public class LugarAdapter extends BaseAdapter {
         descrip.setText(temp.get(2));
 
 
+
+
+
         File imgFile = new File(temp.get(1));
         Log.i(TAG,imgFile.toString());
         if (imgFile.exists()) {
@@ -64,6 +67,8 @@ public class LugarAdapter extends BaseAdapter {
             options.inSampleSize = 2;
             Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getPath(), options);
             imagen.setImageBitmap(myBitmap);
+            Log.i(TAG,"ikiikkikikiik");
+
         }
         else
         {

@@ -64,6 +64,9 @@ public class VerlugaresFragment extends Fragment {
 
         list = (ListView) v.findViewById(R.id.Lugareslistview);
 
+
+
+
         loadUsers();
 
         return v;
@@ -77,9 +80,10 @@ public class VerlugaresFragment extends Fragment {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 int i = 0;
-                temp = new ArrayList<String>();
+
                 for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
                     LugarClass lugar = singleSnapshot.getValue(LugarClass.class);
+                    temp = new ArrayList<String>();
                     Log.i(TAG, lugar.toString());
                     temp.add(lugar.getNombre());
                     Log.i(TAG, "SALI");
@@ -87,17 +91,18 @@ public class VerlugaresFragment extends Fragment {
                     Log.i(TAG, lugarRef.toString());
                     File localFile = null;
                     try {
-                        localFile = File.createTempFile("images_" + lugar.getNombreimagenes().get(0), "jpg");
+                        localFile = File.createTempFile("images_" + lugar.getNombreimagenes().get(0), ".png");
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                     Log.i(TAG, localFile.toString());
 
-                    lugarRef.getFile(localFile)
+                    /*lugarRef.getFile(localFile)
                             .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
                                 @Override
                                 public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
                                     Log.i(TAG, "EXITO");
+                                    //list.setAdapter(new LugarAdapter(getContext(), datos));
 
                                 }
                             }).addOnFailureListener(new OnFailureListener() {
@@ -105,9 +110,10 @@ public class VerlugaresFragment extends Fragment {
                         public void onFailure(@NonNull Exception exception) {
                             Log.i(TAG, "FALLA");
                         }
-                    });
+                    });*/
 
-                    temp.add(localFile.getPath());
+                    //temp.add(localFile.getPath());
+                    temp.add("");
                     temp.add("Tipo: " + lugar.getTipo() + "\nValor: " + String.valueOf(lugar.getValor()));
                     Log.i(TAG, "ddddddddd"+temp.toString());
                     datos.add(temp);
