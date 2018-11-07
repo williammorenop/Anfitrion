@@ -186,8 +186,6 @@ public class AgregarLugarFragment extends Fragment {
                     try {
                         Uri imageUri = data.getData();
                         //agregarStorage(imageUri);
-
-                        //lugar.agregarlugar(imageUri);
                         uris.add(imageUri);
 
                         final InputStream imageStream = getActivity().getApplicationContext().getContentResolver().openInputStream(imageUri);
@@ -208,7 +206,6 @@ public class AgregarLugarFragment extends Fragment {
                     longi = result2.getDouble("long");
                     result2.clear();
                     // getFragmentManager().popBackStack();
-                    //tengoUbicacion(result);
                 }
                 return;
             }
@@ -371,7 +368,7 @@ public class AgregarLugarFragment extends Fragment {
                 }
                 getFragmentManager().popBackStack();
             } else {
-                Toast.makeText(getContext(), "NO ingreso 4 imagenes", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "NO ingreso 4 imagenes.", Toast.LENGTH_SHORT).show();
             }
         } else {
             Toast.makeText(getContext(), "NO a seleccionado una ubicacion", Toast.LENGTH_SHORT).show();

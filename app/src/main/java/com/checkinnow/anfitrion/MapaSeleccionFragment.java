@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -84,7 +85,9 @@ public class MapaSeleccionFragment extends Fragment implements OnMapReadyCallbac
             getFragmentManager().popBackStack();
 
         } else {
-            Toast.makeText(getContext(), "No a seleccionado ningún punto aun.", Toast.LENGTH_SHORT).show();
+            Toast toast = Toast.makeText(getContext(), "No a seleccionado ningún punto aun.", Toast.LENGTH_SHORT);
+            toast.setGravity(Gravity.CENTER, 0, 0);
+            toast.show();
         }
 
     }
