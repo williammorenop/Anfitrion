@@ -1,5 +1,7 @@
 package Modelo;
 
+import android.os.Environment;
+
 public class ContantesClass {
 
     public static final String PATHANFITRIONSTORAGE = "anfitrion/idusuario/lugares/";
@@ -9,5 +11,4 @@ public class ContantesClass {
     public static final int IMAGE_PICKER_REQUEST2 = 1;
     public static final int REQUEST_IMAGE_CAPTURE = 2;
     public static final int REQUEST_LOCATION2 = 3;
-
 }

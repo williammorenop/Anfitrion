@@ -29,7 +29,7 @@
         android:layout_marginStart="0dp"
         android:layout_marginTop="13dp"
         android:ems="10"
-        android:inputType="textPersonName"
+        android:inputType="number"
         android:text="100" />
 
     <EditText

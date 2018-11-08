@@ -349,8 +349,9 @@ public class AgregarLugarFragment extends Fragment {
 
     private void agregarLugar() {
 
-        if (lati != 0 && longi !=0) {
+        if (lati != 0 && longi != 0) {
             if (this.uris.size() >= 4) {
+
                 //LugarClass lugar = new LugarClass();
                 lugar.setNombre(nombre.getText().toString());
                 lugar.setTipo(tipo.getText().toString());
@@ -368,13 +369,13 @@ public class AgregarLugarFragment extends Fragment {
                 Log.i(TAG, "FINAL" + lugar.toString());
 
 
-
                 myRef = database.getReference(PATHLUGARESANFITRION + key);
                 myRef.setValue(lugar);
                 for (Uri uri : this.uris) {
                     agregarStorage(uri);
                 }
                 getFragmentManager().popBackStack();
+
             } else {
                 Toast.makeText(getContext(), "NO ingreso 4 imagenes.", Toast.LENGTH_SHORT).show();
             }

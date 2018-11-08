@@ -1,12 +1,16 @@
 package com.checkinnow.anfitrion;
 
+import android.app.DatePickerDialog;
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.DatePicker;
 import android.widget.ListView;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -23,6 +27,7 @@ import com.google.firebase.storage.StorageReference;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import Modelo.LugarAdapter;
@@ -32,7 +37,7 @@ import static Modelo.ContantesClass.PATHLUGARESANFITRION;
 import static Modelo.ContantesClass.TAG;
 
 
-public class VerlugaresFragment extends Fragment {
+public class VerlugaresFragment extends Fragment implements DatePickerDialog.OnDateSetListener{
 
     List<List<String>> datos;
     List<String> temp;
@@ -41,7 +46,13 @@ public class VerlugaresFragment extends Fragment {
     private StorageReference mStorageRef;
     private View v;
     private ListView list;
+    private static final String CERO = "0";
+    private static final String BARRA = "/";
 
+    public final Calendar c = Calendar.getInstance();
+    final int mes = c.get(Calendar.MONTH);
+    final int dia = c.get(Calendar.DAY_OF_MONTH);
+    final int anio = c.get(Calendar.YEAR);
 
     public VerlugaresFragment() {
         // Required empty public constructor
@@ -64,7 +75,12 @@ public class VerlugaresFragment extends Fragment {
 
         list = (ListView) v.findViewById(R.id.Lugareslistview);
 
-
+        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                obtenerFecha();
+            }
+        });
 
 
         loadUsers();
@@ -79,7 +95,6 @@ public class VerlugaresFragment extends Fragment {
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                int i = 0;
 
                 for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
                     LugarClass lugar = singleSnapshot.getValue(LugarClass.class);
@@ -90,19 +105,22 @@ public class VerlugaresFragment extends Fragment {
                     StorageReference lugarRef = mStorageRef.child(lugar.getPath()).child(lugar.getNombreimagenes().get(0));
                     Log.i(TAG, lugarRef.toString());
                     File localFile = null;
+
                     try {
                         localFile = File.createTempFile("images_" + lugar.getNombreimagenes().get(0), ".png");
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
+
                     Log.i(TAG, localFile.toString());
 
-                    /*lugarRef.getFile(localFile)
+                    lugarRef.getFile(localFile)
                             .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
                                 @Override
                                 public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
                                     Log.i(TAG, "EXITO");
-                                    //list.setAdapter(new LugarAdapter(getContext(), datos));
+                                    LugarAdapter temp = (LugarAdapter) list.getAdapter();
+                                    list.setAdapter(temp);
 
                                 }
                             }).addOnFailureListener(new OnFailureListener() {
@@ -110,7 +128,7 @@ public class VerlugaresFragment extends Fragment {
                         public void onFailure(@NonNull Exception exception) {
                             Log.i(TAG, "FALLA");
                         }
-                    });*/
+                    });
 
                     //temp.add(localFile.getPath());
                     temp.add("");
@@ -129,8 +147,32 @@ public class VerlugaresFragment extends Fragment {
         });
 
     }
-
     //////////////////////////////////////////////TRAERLUGARES--/////////////////////////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+
+    }
+
+    public void onDateSet(DatePickerDialog view, int year, int month, int dayOfMonth) {
+        //Esta variable lo que realiza es aumentar en uno el mes ya que comienza desde 0 = enero
+        final int mesActual = month + 1;
+        //Formateo el día obtenido: antepone el 0 si son menores de 10
+        String diaFormateado = (dayOfMonth < 10)? CERO + String.valueOf(dayOfMonth):String.valueOf(dayOfMonth);
+        //Formateo el mes obtenido: antepone el 0 si son menores de 10
+        String mesFormateado = (mesActual < 10)? CERO + String.valueOf(mesActual):String.valueOf(mesActual);
+        //Muestro la fecha con el formato deseado
+        //TextoFecha.setText(diaFormateado + BARRA + mesFormateado + BARRA + year);
+    }
+
+    private void obtenerFecha(){
+
+        DatePickerDialog recogerFecha = new DatePickerDialog(getActivity());
+        onDateSet(recogerFecha,anio,mes,dia);
+        recogerFecha.show();
+
+    }
+
 
 
 }

@@ -15,12 +15,15 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -133,6 +136,18 @@ public class MapaSeleccionFragment extends Fragment implements OnMapReadyCallbac
 
         mMap = googleMap;
         mMap.getUiSettings().setZoomControlsEnabled(true);
+
+        mMap.setMapStyle(MapStyleOptions
+                .loadRawResourceStyle(getContext(), R.raw.mapa));
+
+        LatLng location = new LatLng(4.0151969, -74.1989402);
+        lastmarker = mMap.addMarker(new MarkerOptions().position(location).title("Aqui"));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(location));
+        mMap.moveCamera(CameraUpdateFactory.zoomTo(5));
+        lastmarker.remove();
+
+
+
         mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override
             public void onMapLongClick(LatLng latLng) {
@@ -147,7 +162,7 @@ public class MapaSeleccionFragment extends Fragment implements OnMapReadyCallbac
         if (lastmarker != null) {
             lastmarker.remove();
         }
-        lastmarker = mMap.addMarker(new MarkerOptions().position(latLng).title("Aqui"));
+        lastmarker = mMap.addMarker(new MarkerOptions().position(latLng).title("Aqui").icon(BitmapDescriptorFactory.fromResource(R.drawable.placeholder32)));
         latlong.setText("Lat: " + latLng.latitude + " Long: " + latLng.longitude);
     }
 }
