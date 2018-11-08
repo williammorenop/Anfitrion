@@ -104,7 +104,8 @@ public class VerlugaresFragment extends Fragment implements DatePickerDialog.OnD
                     Log.i(TAG, "SALI");
                     StorageReference lugarRef = mStorageRef.child(lugar.getPath()).child(lugar.getNombreimagenes().get(0));
                     Log.i(TAG, lugarRef.toString());
-                    File localFile = null;
+
+                   File localFile = null;
 
                     try {
                         localFile = File.createTempFile("images_" + lugar.getNombreimagenes().get(0), ".png");
@@ -118,9 +119,11 @@ public class VerlugaresFragment extends Fragment implements DatePickerDialog.OnD
                             .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
                                 @Override
                                 public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                                    Log.i(TAG, "EXITO");
-                                    LugarAdapter temp = (LugarAdapter) list.getAdapter();
-                                    list.setAdapter(temp);
+                                    Log.i(TAG, "EXITO"+taskSnapshot.getStorage().toString());
+                                    list.invalidate();
+                                    //LugarAdapter temp = (LugarAdapter) list.getAdapter();
+                                    //list.setAdapter(temp);
+                                    list.setAdapter((LugarAdapter) list.getAdapter());
 
                                 }
                             }).addOnFailureListener(new OnFailureListener() {
@@ -130,8 +133,8 @@ public class VerlugaresFragment extends Fragment implements DatePickerDialog.OnD
                         }
                     });
 
-                    //temp.add(localFile.getPath());
-                    temp.add("");
+                    temp.add(localFile.getPath());
+                    //temp.add("");
                     temp.add("Tipo: " + lugar.getTipo() + "\nValor: " + String.valueOf(lugar.getValor()));
                     datos.add(temp);
                 }
