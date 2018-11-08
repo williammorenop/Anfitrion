@@ -65,8 +65,6 @@ public class VerlugaresFragment extends Fragment implements DatePickerDialog.OnD
         database = FirebaseDatabase.getInstance();
         mStorageRef = FirebaseStorage.getInstance().getReference();
         datos = new ArrayList<List<String>>();
-        Log.i("lala","ENTREVER");
-
     }
 
     @Override
@@ -74,9 +72,6 @@ public class VerlugaresFragment extends Fragment implements DatePickerDialog.OnD
                              Bundle savedInstanceState) {
 
         v = inflater.inflate(R.layout.fragment_verlugares, container, false);
-
-        Log.i("lala","ENTREVER2");
-
 
         list = (ListView) v.findViewById(R.id.Lugareslistview);
 
@@ -138,10 +133,8 @@ public class VerlugaresFragment extends Fragment implements DatePickerDialog.OnD
                     //temp.add(localFile.getPath());
                     temp.add("");
                     temp.add("Tipo: " + lugar.getTipo() + "\nValor: " + String.valueOf(lugar.getValor()));
-                    Log.i(TAG, "ddddddddd"+temp.toString());
                     datos.add(temp);
                 }
-                Log.i(TAG, "bbbbbb" + datos.toString());
                 list.setAdapter(new LugarAdapter(getContext(), datos));
             }
 

@@ -16,6 +16,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -348,40 +349,96 @@ public class AgregarLugarFragment extends Fragment {
 
     private void agregarLugar() {
 
-        if (lati != 0 && longi != 0) {
-            if (this.uris.size() >= 4) {
+        if(validarDatos())
+        {
+            if (lati != 0 && longi != 0) {
+                if (this.uris.size() >= 4) {
 
-                //LugarClass lugar = new LugarClass();
-                lugar.setNombre(nombre.getText().toString());
-                lugar.setTipo(tipo.getText().toString());
-                lugar.setValor(Double.valueOf(valor.getText().toString()));
-                lugar.setPath(PATHANFITRIONSTORAGE + key);
-                Log.i(TAG, lugar.toString());
-                lugar.setLatitude(this.lati);
-                lugar.setLongitud(this.longi);
-                lugar.setID(this.key);
+                    //LugarClass lugar = new LugarClass();
+                    lugar.setNombre(nombre.getText().toString());
+                    lugar.setTipo(tipo.getText().toString());
+                    lugar.setValor(Double.valueOf(valor.getText().toString()));
+                    lugar.setPath(PATHANFITRIONSTORAGE + key);
+                    Log.i(TAG, lugar.toString());
+                    lugar.setLatitude(this.lati);
+                    lugar.setLongitud(this.longi);
+                    lugar.setID(this.key);
 
-                for (Uri uri : this.uris) {
-                    lugar.getNombreimagenes().add(uri.getLastPathSegment());
+                    for (Uri uri : this.uris) {
+                        lugar.getNombreimagenes().add(uri.getLastPathSegment());
+                    }
+
+                    Log.i(TAG, "FINAL" + lugar.toString());
+
+
+                    myRef = database.getReference(PATHLUGARESANFITRION + key);
+                    myRef.setValue(lugar);
+                    for (Uri uri : this.uris) {
+                        agregarStorage(uri);
+                    }
+                    getFragmentManager().popBackStack();
+
+                } else {
+                    Toast.makeText(getContext(), "NO ingreso 4 imagenes.", Toast.LENGTH_SHORT).show();
                 }
-
-                Log.i(TAG, "FINAL" + lugar.toString());
-
-
-                myRef = database.getReference(PATHLUGARESANFITRION + key);
-                myRef.setValue(lugar);
-                for (Uri uri : this.uris) {
-                    agregarStorage(uri);
-                }
-                getFragmentManager().popBackStack();
-
             } else {
-                Toast.makeText(getContext(), "NO ingreso 4 imagenes.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "NO a seleccionado una ubicacion", Toast.LENGTH_SHORT).show();
             }
-        } else {
-            Toast.makeText(getContext(), "NO a seleccionado una ubicacion", Toast.LENGTH_SHORT).show();
         }
 
+
+    }
+
+    private boolean validarDatos() {
+
+        /*private EditText nombre;
+        private EditText tipo;
+        private EditText valor;
+        */
+        boolean valid = true;
+        String name = nombre.getText().toString();
+
+        if (TextUtils.isEmpty(name))
+        {
+            nombre.setError("Requerido");
+            valid = false;
+        }
+        else
+        {
+            nombre.setError(null);
+        }
+
+        String tipe = tipo.getText().toString();
+        if (TextUtils.isEmpty(tipe))
+        {
+            tipo.setError("Requerido");
+            valid = false;
+        }
+        else
+        {
+            tipo.setError(null);
+        }
+
+
+        try {
+            Double val = Double.valueOf(valor.getText().toString());
+            valor.setError(null);
+
+            if (val == 0)
+            {
+                valor.setError("0 no es un valor");
+                valid = false;
+            }
+            else
+            {
+                valor.setError(null);
+            }
+
+        }catch  (Exception e) {
+            valor.setError("Requerido");
+            valid = false;
+        }
+        return valid;
     }
 
 
