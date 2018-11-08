@@ -323,10 +323,6 @@ public class AgregarLugarFragment extends Fragment {
     /////////////////////////////////////////STORAGE////////////////////////////////////////////////////////////////
 
     private void agregarStorage(Uri uri) {
-        Log.i(TAG, "checkinnow:  -" + uri);
-        Log.i(TAG, "checkinnow:  -22" + uri.getLastPathSegment());
-
-
         StorageReference mRef = mStorageRef.child(PATHANFITRIONSTORAGE).child(key).child(uri.getLastPathSegment());
 
         mRef.putFile(uri)
@@ -349,8 +345,7 @@ public class AgregarLugarFragment extends Fragment {
 
     private void agregarLugar() {
 
-        if(validarDatos())
-        {
+        if (validarDatos()) {
             if (lati != 0 && longi != 0) {
                 if (this.uris.size() >= 4) {
 
@@ -391,55 +386,38 @@ public class AgregarLugarFragment extends Fragment {
 
     private boolean validarDatos() {
 
-        /*private EditText nombre;
-        private EditText tipo;
-        private EditText valor;
-        */
         boolean valid = true;
         String name = nombre.getText().toString();
 
-        if (TextUtils.isEmpty(name))
-        {
+        if (TextUtils.isEmpty(name)) {
             nombre.setError("Requerido");
             valid = false;
-        }
-        else
-        {
+        } else {
             nombre.setError(null);
         }
 
         String tipe = tipo.getText().toString();
-        if (TextUtils.isEmpty(tipe))
-        {
+        if (TextUtils.isEmpty(tipe)) {
             tipo.setError("Requerido");
             valid = false;
-        }
-        else
-        {
+        } else {
             tipo.setError(null);
         }
-
-
         try {
             Double val = Double.valueOf(valor.getText().toString());
             valor.setError(null);
 
-            if (val == 0)
-            {
+            if (val == 0) {
                 valor.setError("0 no es un valor");
                 valid = false;
-            }
-            else
-            {
+            } else {
                 valor.setError(null);
             }
 
-        }catch  (Exception e) {
+        } catch (Exception e) {
             valor.setError("Requerido");
             valid = false;
         }
         return valid;
     }
-
-
 }

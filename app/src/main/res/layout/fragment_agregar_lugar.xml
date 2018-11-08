@@ -113,6 +113,10 @@
             android:layout_below="@+id/textView6"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="5dp"
+            android:background="@drawable/botonplano"
+            android:textSize="13dp"
+            android:textColor="@color/primary_light"
+            android:fontFamily="@font/juiceline"
             android:text="Ubicacion" />
 
         <LinearLayout
@@ -122,16 +126,22 @@
             android:layout_below="@+id/textView5"
             android:layout_alignStart="@+id/textView"
             android:layout_marginTop="5dp"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:padding="5dp">
 
             <Button
                 android:id="@+id/buttonCam"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/textView5"
+                android:layout_marginEnd="5dp"
                 android:layout_toEndOf="@+id/buttonGal"
                 android:layout_weight="0.5"
-                android:text="Camara" />
+                android:background="@drawable/botonplano"
+                android:fontFamily="@font/juiceline"
+                android:text="Camara"
+                android:textColor="@color/primary_light"
+                android:textSize="13dp" />
 
             <Button
                 android:id="@+id/buttonGal"
@@ -139,8 +149,13 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/textView5"
                 android:layout_alignStart="@+id/textView"
+                android:layout_marginStart="5dp"
                 android:layout_weight="0.5"
-                android:text="Galeria" />
+                android:background="@drawable/botonplano"
+                android:fontFamily="@font/juiceline"
+                android:text="Galeria"
+                android:textColor="@color/primary_light"
+                android:textSize="13dp" />
 
         </LinearLayout>
 
@@ -182,6 +197,10 @@
             android:layout_marginTop="29dp"
             android:foregroundGravity="center_horizontal"
             android:gravity="center_vertical|center_horizontal"
+            android:background="@drawable/botonplano"
+            android:textSize="13dp"
+            android:textColor="@color/primary_light"
+            android:fontFamily="@font/juiceline"
             android:text="Agregar" />
 
     </RelativeLayout>

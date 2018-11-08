@@ -23,7 +23,14 @@
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="21dp"
-            android:text="Seleccionar" />
+            android:background="@drawable/botonplano"
+            android:fontFamily="@font/juiceline"
+            android:padding="10dp"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:text="Seleccionar"
+            android:textColor="@color/primary_light"
+            android:textSize="13dp" />
 
         <TextView
             android:id="@+id/latlong"
