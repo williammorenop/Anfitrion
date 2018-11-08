@@ -1,16 +1,13 @@
 package Modelo;
 
 import android.content.Context;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.CursorAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -31,12 +28,11 @@ public class LugarAdapter extends BaseAdapter {
     List<List<String>> datos;
 
 
-    public LugarAdapter(Context conexto, List<List<String>> datos)
-    {
+    public LugarAdapter(Context conexto, List<List<String>> datos) {
         this.contexto = conexto;
         this.datos = datos;
 
-        inflater = (LayoutInflater)conexto.getSystemService(conexto.LAYOUT_INFLATER_SERVICE);
+        inflater = (LayoutInflater) conexto.getSystemService(conexto.LAYOUT_INFLATER_SERVICE);
     }
 
     @Override
@@ -46,33 +42,25 @@ public class LugarAdapter extends BaseAdapter {
 
         TextView titulo = (TextView) vista.findViewById(R.id.tituloLugar);
         TextView descrip = (TextView) vista.findViewById(R.id.descipciontext);
-
         ImageView imagen = (ImageView) vista.findViewById(R.id.imagLugar);
 
-        Log.i(TAG,datos.toString());
+        Log.i(TAG, datos.toString());
 
         List<String> temp = new ArrayList<String>(datos.get(i));
-        Log.i(TAG,"aaaaaaaaa"+datos.toString());
         titulo.setText(temp.get(0));
         descrip.setText(temp.get(2));
 
-
-
-
-
         File imgFile = new File(temp.get(1));
-        Log.i(TAG,imgFile.toString());
+        Log.i(TAG, imgFile.toString());
         if (imgFile.exists()) {
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inSampleSize = 2;
             Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getPath(), options);
             imagen.setImageBitmap(myBitmap);
-            Log.i(TAG,"ikiikkikikiik");
 
-        }
-        else
-        {
-            Log.i(TAG,"jujujujujujujujujujuj");
+
+        } else {
+            Log.i(TAG, "NO encontro la imagen el adapter");
         }
 
 /*

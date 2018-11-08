@@ -121,8 +121,6 @@ public class VerlugaresFragment extends Fragment implements DatePickerDialog.OnD
                                 public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
                                     Log.i(TAG, "EXITO"+taskSnapshot.getStorage().toString());
                                     list.invalidate();
-                                    //LugarAdapter temp = (LugarAdapter) list.getAdapter();
-                                    //list.setAdapter(temp);
                                     list.setAdapter((LugarAdapter) list.getAdapter());
 
                                 }
