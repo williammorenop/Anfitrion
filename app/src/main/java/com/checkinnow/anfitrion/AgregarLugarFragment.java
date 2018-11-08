@@ -104,7 +104,6 @@ public class AgregarLugarFragment extends Fragment {
         agregar = v.findViewById(R.id.buttonAgregar);
         image1 = v.findViewById(R.id.imagegal);
         image2 = v.findViewById(R.id.imagecam);
-        texto = v.findViewById(R.id.textView);
         Log.i("TESTING", "11111111");
         requestPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE,
                 "Se necesita acceder al almacenamiento", ContantesClass.READ_EXTERNAL_STORAGE2);

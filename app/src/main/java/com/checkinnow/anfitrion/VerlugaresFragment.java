@@ -65,13 +65,18 @@ public class VerlugaresFragment extends Fragment implements DatePickerDialog.OnD
         database = FirebaseDatabase.getInstance();
         mStorageRef = FirebaseStorage.getInstance().getReference();
         datos = new ArrayList<List<String>>();
+        Log.i("lala","ENTREVER");
 
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         v = inflater.inflate(R.layout.fragment_verlugares, container, false);
+
+        Log.i("lala","ENTREVER2");
+
 
         list = (ListView) v.findViewById(R.id.Lugareslistview);
 
